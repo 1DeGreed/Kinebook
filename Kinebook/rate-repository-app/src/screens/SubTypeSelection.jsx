@@ -3,28 +3,22 @@ import { View, Text, StyleSheet, TouchableOpacity, ImageBackground } from 'react
 
 const background = require('../img/BackgroundLobby.jpeg');
 
-const SelectEvaluation = ({ navigation, route }) => {
-  const { kinesiologoId, pacienteId } = route.params;
+const SubTypeSelection = ({ navigation, route }) => {
+  const { kinesiologoId, pacienteId, type } = route.params;
 
-  const handleSelect = (type) => {
-      navigation.navigate('Evaluaciones', { type, kinesiologoId, pacienteId });
+  const handleSelect = (subType) => {
+    navigation.navigate('Evaluaciones', { type, subType, kinesiologoId, pacienteId });
   };
 
   return (
     <ImageBackground source={background} style={styles.background}>
       <View style={styles.container}>
         <View style={styles.buttonContainer}>
-        <TouchableOpacity style={styles.button} onPress={() => handleSelect('Cognitivo/Conductual')}>
-            <Text style={styles.buttonText}>Cognitivo/Conductual</Text>
+          <TouchableOpacity style={styles.button} onPress={() => handleSelect('Incapacidad')}>
+            <Text style={styles.buttonText}>Incapacidad</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={() => handleSelect('SensorioPerceptivo')}>
-            <Text style={styles.buttonText}>Sensorio Perceptivo</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={() => handleSelect('NeuroMuscular')}>
-            <Text style={styles.buttonText}>NeuroMuscular</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={() => handleSelect('MusculoEsqueletico')}>
-            <Text style={styles.buttonText}>MusculoEsqueletico</Text>
+          <TouchableOpacity style={styles.button} onPress={() => handleSelect('Psicologia')}>
+            <Text style={styles.buttonText}>Psicología</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -65,4 +59,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SelectEvaluation;
+export default SubTypeSelection;

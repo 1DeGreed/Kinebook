@@ -10,7 +10,7 @@ const Perfil = ({ route }) => {
   const navigation = useNavigation();
 
   useEffect(() => {
-    fetch(`http://192.168.0.6:3000/api/kinesiologo/${kinesiologoId}`)
+    fetch(`http://192.168.100.45:3000/api/kinesiologo/${kinesiologoId}`)
       .then(response => response.json())
       .then(data => {
         setKinesiologo(data);

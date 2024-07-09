@@ -25,7 +25,7 @@ const EditarPaciente = ({ route, navigation }) => {
   const handleSave = () => {
     const updatedData = { nombre, apellidoPaterno, apellidoMaterno, fechaNacimiento, diagnostico };
 
-    fetch(`http://192.168.0.6:3000/api/pacientes/${paciente._id}`, {
+    fetch(`http://192.168.100.45:3000/api/pacientes/${paciente._id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',

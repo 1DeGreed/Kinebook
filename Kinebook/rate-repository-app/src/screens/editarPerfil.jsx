@@ -17,7 +17,7 @@ const EditarPerfil = ({ route, navigation }) => {
       updatedData.contraseña = contraseña;
     }
 
-    fetch(`http://192.168.0.6:3000/api/kinesiologos/${kinesiologo._id}`, {
+    fetch(`http://192.168.100.45:3000/api/kinesiologos/${kinesiologo._id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',

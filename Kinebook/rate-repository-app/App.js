@@ -7,7 +7,6 @@ import Lobby from './src/screens/lobby';
 import Register from './src/screens/register';
 import Profile from './src/screens/perfil';
 import Evaluaciones from './src/screens/evaluaciones';
-import NuevaEvaluacion from './src/screens/nuevaevaluacion';
 import DetalleEvaluacion from './src/screens/detalleEvaluacion';
 import SelectEvaluation from './src/screens/SelecEvaluacion';
 import AgregarPaciente from './src/screens/agregarPaciente';
@@ -30,7 +29,6 @@ const AppNavigator = () => {
         <Stack.Screen name="Register" component={Register} options={{ headerShown: false }} />
         <Stack.Screen name="Profile" component={Profile} options={{ headerTitle: 'Perfil', headerStyle: { backgroundColor: '#388E71' }, headerTintColor: '#FFFFFF' }} />
         <Stack.Screen name="Evaluaciones" component={Evaluaciones} options={{ headerTitle: '', headerStyle: { backgroundColor: '#388E71' }, headerTintColor: '#FFFFFF' }} />
-        <Stack.Screen name="NuevaEvaluacion" component={NuevaEvaluacion} options={{ headerShown: false }} />
         <Stack.Screen name="DetalleEvaluacion" component={DetalleEvaluacion} options={{ headerTitle: 'Evaluaciones', headerStyle: { backgroundColor: '#388E71' }, headerTintColor: '#FFFFFF' }} />
         <Stack.Screen name="SelectEvaluation" component={SelectEvaluation} options={{ headerTitle: '', headerStyle: { backgroundColor: '#388E71' }, headerTintColor: '#FFFFFF' }} />
         <Stack.Screen name="Pacientes" component={Pacientes} options={{ headerTitle: 'Pacientes', headerStyle: { backgroundColor: '#388E71' }, headerTintColor: '#FFFFFF' }} />

@@ -10,6 +10,7 @@ const Evaluation = ({ route, navigation }) => {
   const [answers, setAnswers] = useState({});
   const [irradiation, setIrradiation] = useState(false);
   const [isAnswered, setIsAnswered] = useState(false);
+  const [subType, setSubType] = useState('');
 
   const questions = {
     NeuroMuscular: [
@@ -26,10 +27,14 @@ const Evaluation = ({ route, navigation }) => {
       'Rotación izquierda columna:',
       'Inclinación izquierda columna:',
       'Inclinación derecha columna:',
-      'Flexión cadera:',
-      'Extensión cadera:',
-      'Rotación interna cadera:',
-      'Rotación externa cadera:',
+      'Flexión cadera izquierda:',
+      'Extensión cadera izquierda:',
+      'Rotación interna cadera izquierda:',
+      'Rotación externa cadera izquierda:',
+      'Flexión cadera derecha:',
+      'Extensión cadera derecha:',
+      'Rotación interna cadera derecha:',
+      'Rotación externa cadera derecha:',
     ],
     SensorioPerceptivo: [
       'Antigüedad del dolor:',
@@ -40,6 +45,65 @@ const Evaluation = ({ route, navigation }) => {
       'Atenuantes y agravantes:',
       '¿Por dónde le duele?',
     ],
+    Incapacidad: [
+      "Me quedo en casa la mayor parte del tiempo por mi dolor de espalda",
+      "Cambio de postura con frecuencia para intentar aliviar la espalda",
+      "Debido a mi espalda, camino más lentamente de lo normal",
+      "Debido a mi espalda, no puedo hacer ninguna de las faenas que habitualmente hago en casa",
+      "Por mi espalda, uso el pasamanos para subir escaleras",
+      "A causa de mi espalda, debo acostarme más a menudo para descansar",
+      "Debido a mi espalda, necesito agarrarme a algo para levantarme de los sillones o sofás",
+      "Por culpa de mi espalda, pido a los demás que me hagan las cosas",
+      "Me visto más lentamente de lo normal a causa de mi espalda",
+      "A causa de mi espalda, sólo me quedo de pie durante cortos períodos de tiempo",
+      "A causa de mi espalda, procuro evitar inclinarme o arrodillarme",
+      "Me cuesta levantarme de una silla por culpa de mi espalda",
+      "Me duele la espalda casi siempre",
+      "Me cuesta darme la vuelta en la cama por culpa de mi espalda",
+      "Debido a mi dolor de espalda, no tengo mucho apetito",
+      "Me cuesta ponerme los calcetines - o medias - por mi dolor de espalda",
+      "Debido a mi dolor de espalda, tan solo ando distancias cortas",
+      "Duermo peor debido a mi espalda",
+      "Por mi dolor de espalda, deben ayudarme a vestirme",
+      "Estoy casi todo el día sentado a causa de mi espalda",
+      "Evito hacer trabajos pesados en casa, por culpa de mi espalda",
+      "Por mi dolor de espalda, estoy más irritable y de peor humor de lo normal",
+      "A causa de mi espalda, subo las escaleras más lentamente de lo normal",
+      "Me quedo casi constantemente en la cama por mi espalda",
+    ],
+    Psicologia: [
+      "La actividad física fue la causa de mi lumbalgia",
+      "La actividad física hace que mi lumbalgia se agrave",
+      "La actividad física podría lesionar mi columna lumbar",
+      "No debería realizar actividades físicas que podrían agravar mi dolor",
+      "No puedo realizar actividades físicas que podrían empeorar mi lumbalgia",
+      "Mi lumbalgia fue causada por el trabajo o por un accidente de trabajo",
+      "El trabajo agrava mi lumbalgia",
+      "Tengo una demanda de indemnización por mi lumbalgia",
+      "El trabajo es muy pesado para mí",
+      "El trabajo hace o haría que mi lumbalgia empeore",
+      "El trabajo puede dañar mi columna lumbar",
+      "No debería hacer mi trabajo con mi dolor actual",
+      "No puedo hacer mi trabajo con mi dolor actual",
+      "No puedo hacer mi trabajo hasta que mi lumbalgia sea tratada",
+      "No creo reintegrarme a mi trabajo antes de 3 meses",
+      "No creo que sea capaz de integrarme a ese trabajo",
+    ],
+  };
+
+  const setSubTypeAndResetAnswers = (itemValue) => {
+    setSubType(itemValue);
+    const newAnswers = {};
+    setAnswers(newAnswers);
+    setIsAnswered(false);
+  };
+
+  const validateNumberInput = (text) => {
+    const num = parseInt(text, 10);
+    if (!isNaN(num) && num >= 0 && num <= 6) {
+      return text;
+    }
+    return '';
   };
 
   const handleChange = (text, key, field) => {
@@ -48,7 +112,6 @@ const Evaluation = ({ route, navigation }) => {
     newAnswers[key][field] = text;
     setAnswers(newAnswers);
 
-    // Check if any question has been answered
     const answered = Object.values(newAnswers).some(
       (question) => Object.values(question).some((value) => value.trim().length > 0)
     );
@@ -85,13 +148,14 @@ const Evaluation = ({ route, navigation }) => {
               }, {}),
             };
 
-            fetch('http://192.168.0.6:3000/api/evaluaciones', {
+            fetch('http://192.168.100.45:3000/api/evaluaciones', {
               method: 'POST',
               headers: {
                 'Content-Type': 'application/json',
               },
               body: JSON.stringify({
                 type,
+                subType,
                 answers: formattedAnswers,
                 kinesiologoId,
                 pacienteId,
@@ -223,14 +287,82 @@ const Evaluation = ({ route, navigation }) => {
     </>
   );
 
-  const renderQuestions = () => {
-    if (type === 'SensorioPerceptivo') {
-      return renderSensorioPerceptivo();
-    } else if (type === 'NeuroMuscular') {
-      return renderNeuroMuscular();
-    } else if (type === 'MusculoEsqueletico') {
-      return questions[type].map((question, index) => (
+  const renderIncapacidad = () => (
+    <>
+      {questions.Incapacidad.map((question, index) => (
         <View key={index} style={styles.questionContainer}>
+          <Text style={styles.questionText}>{question}</Text>
+          <Picker
+            selectedValue={answers[question]?.response || ''}
+            onValueChange={(value) => handleChange(value, question, 'response')}
+            style={styles.input}
+          >
+            <Picker.Item label="Seleccione" value="" />
+            <Picker.Item label="Sí" value="sí" />
+            <Picker.Item label="No" value="no" />
+          </Picker>
+        </View>
+      ))}
+      <View style={styles.observationsContainer}>
+        <Text style={styles.observationsLabel}>Observaciones:</Text>
+        <TextInput
+          style={styles.observationsInput}
+          multiline
+          onChangeText={(text) => handleChange(text, 'incapacidadObservaciones', 'observaciones')}
+          value={answers['incapacidadObservaciones']?.observaciones || ''}
+        />
+      </View>
+    </>
+  );
+  const renderPsicologia = () => (
+    <>
+      {questions.Psicologia.map((question, index) => (
+        <View key={index} style={styles.psicologiaContainer}>
+          <Text style={styles.IncapacidadLabel}>Responda de 0 a 6</Text>
+          <Text style={styles.questionText}>{question}</Text>
+          <TextInput
+            style={styles.input}
+            keyboardType="numeric"
+            multiline
+            maxLength={1}
+            onChangeText={(text) => handleChange(validateNumberInput(text), question, 'answer')}
+            value={answers[question]?.answer || ''}
+          />
+        </View>
+      ))}
+      <View style={styles.observationsContainer}>
+        <Text style={styles.observationsLabel}>Observaciones:</Text>
+        <TextInput
+          style={styles.observationsInput}
+          multiline
+          onChangeText={(text) => handleChange(text, 'psicologiaObservaciones', 'observaciones')}
+          value={answers['psicologiaObservaciones']?.observaciones || ''}
+        />
+      </View>
+    </>
+  );
+
+  const renderMusculoEsqueletico = () => {
+    return questions[type].map((question, index) => (
+      <View key={index} style={styles.questionContainer}>
+        <Text style={styles.questionText}>{question}</Text>
+        <TextInput
+          style={styles.input}
+          value={answers[index]?.response || ''}
+          onChangeText={(text) => handleChange(text, index, 'response')}
+          multiline
+        />
+      </View>
+    ));
+  };
+  
+  const renderQuestions = () => {
+    switch (type) {
+      case 'NeuroMuscular':
+        return renderNeuroMuscular();
+      case 'MusculoEsqueletico':
+        return questions[type].map((question, index) => (
+          <View key={index} style={styles.questionContainer}>
           <Text style={styles.questionText}>{question}</Text>
           <Text style={styles.infoText}>(Rellene con grados de movilidad)</Text>
           <TextInput
@@ -240,111 +372,122 @@ const Evaluation = ({ route, navigation }) => {
             value={answers[index]?.answer || ''}
           />
         </View>
-      ));
-    }
+        ));
+      case 'SensorioPerceptivo':
+        return renderSensorioPerceptivo();
+        case 'Cognitivo/Conductual':
+          return (
+            <>
+              <Picker
+                selectedValue={subType}
+                style={styles.picker}
+                onValueChange={setSubTypeAndResetAnswers}
 
-    return null;
+              >
+                <Picker.Item label="Seleccione" value="" />
+                <Picker.Item label="Incapacidad" value="Incapacidad" />
+                <Picker.Item label="Psicología" value="Psicología" />
+              </Picker>
+              {subType === 'Incapacidad' && renderIncapacidad()}
+              {subType === 'Psicología' && renderPsicologia()}
+              
+            </>
+          );
+      default:
+        return null;
+    }
   };
 
   return (
-    <ImageBackground source={background} style={styles.background}>
-      <ScrollView contentContainerStyle={styles.container}>
-        <View style={styles.contentContainer}>
-          <Text style={styles.title}>{type}</Text>
-          {renderQuestions()}
-          <TouchableOpacity
-            style={[styles.button, { backgroundColor: isAnswered ? '#95E2C8' : '#c4c4c4' }]}
-            onPress={handleSubmit}
-            disabled={!isAnswered}
-          >
-            <Text style={styles.buttonText}>Guardar Evaluación</Text>
-          </TouchableOpacity>
-        </View>
+    <ImageBackground source={background} style={styles.container}>
+      <View style={styles.overlay}>
+      <ScrollView>
+        <Text style={styles.title}>{type}</Text>
+        {renderQuestions()}
+        <TouchableOpacity
+          style={[styles.submitButton, { backgroundColor: isAnswered ? '#77CFAF' : '#CCCCCC' }]}
+          onPress={handleSubmit}
+        >
+          <Text style={styles.submitButtonText}>Guardar</Text>
+        </TouchableOpacity>
       </ScrollView>
+      </View>
     </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
-  background: {
-    flex: 1,
-    width: '100%',
-    height: '100%',
+  IncapacidadLabel:{
+    marginTop: 15,
+    color: '#A6A0A0',
   },
   container: {
-    flexGrow: 1,
-    justifyContent: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 20,
-  },
-  contentContainer: {
-    backgroundColor: 'white',
-    borderRadius: 10,
+    flex: 1,
     padding: 20,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
+    backgroundColor: 'rgba(255, 255, 255, 0.7)', // Fondo blanco semi-transparente
   },
+  overlay: {
+    flex: 1,
+    backgroundColor: 'rgba(255, 255, 255, 0.8)', // Fondo blanco semitransparente
+    padding: 20,
+  },  
   title: {
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 20,
+    color: '#000000',
     textAlign: 'center',
+  },
+  questionContainer: {
+    marginBottom: 20,
   },
   questionText: {
     fontSize: 18,
-    marginBottom: 10,
-  },
-  infoText: {
-    fontSize: 14,
-    color: 'gray',
-    marginBottom: 10,
+    fontWeight: 'bold',
+    color: '#4C4C4C',
   },
   input: {
-    height: 40,
-    borderColor: 'gray',
-    borderWidth: 1,
-    marginBottom: 20,
-    paddingHorizontal: 10,
-  },
-  button: {
-    backgroundColor: '#95E2C8',
-    padding: 15,
-    borderRadius: 10,
-    alignItems: 'center',
-    marginTop: 20,
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 18,
+    backgroundColor: '#fff',
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 10,
   },
   segmentContainer: {
     marginBottom: 20,
   },
   segmentText: {
     fontSize: 18,
-    marginBottom: 10,
+    fontWeight: 'bold',
+    color: '#4C4C4C',
   },
   picker: {
-    height: 50,
-    width: '100%',
-    marginBottom: 20,
+    backgroundColor: '#fff',
+    marginTop: 10,
   },
   descriptionLabel: {
     fontSize: 16,
-    marginBottom: 5,
+    fontWeight: 'bold',
+    color: '#4C4C4C',
+    marginTop: 10,
   },
   descriptionInput: {
-    height: 60,
-    borderColor: 'gray',
-    borderWidth: 1,
-    paddingHorizontal: 10,
-    marginBottom: 20,
+    backgroundColor: '#fff',
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 10,
+    height: 80,
+    textAlignVertical: 'top',
+  },
+  submitButton: {
+    padding: 15,
+    borderRadius: 5,
+    alignItems: 'center',
+    marginTop: 20,
+  },
+  submitButtonText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#fff',
   },
   checkboxContainer: {
     flexDirection: 'row',
@@ -353,13 +496,29 @@ const styles = StyleSheet.create({
   },
   checkboxLabel: {
     fontSize: 18,
+    color: '#4C4C4C',
     marginRight: 10,
   },
   image: {
     width: '100%',
     height: 200,
-    resizeMode: 'contain',
-    marginBottom: 20,
+    marginTop: 20,
+  },
+  observationsContainer: {
+    marginTop: 20,
+  },
+  observationsLabel: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#4C4C4C',
+  },
+  observationsInput: {
+    backgroundColor: '#fff',
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 10,
+    height: 80,
+    textAlignVertical: 'top',
   },
 });
 

@@ -45,7 +45,7 @@ const AgregarPaciente = ({ route }) => {
       return;
     }
 
-    fetch('http://192.168.0.6:3000/api/pacientes', {
+    fetch('http://192.168.100.45:3000/api/pacientes', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -63,7 +63,7 @@ const AgregarPaciente = ({ route }) => {
       .then(response => response.json())
       .then(data => {
         if (data.message === 'Paciente agregado exitosamente') {
-          navigation.navigate('lobby', { kinesiologoId });
+          navigation.navigate('Lobby', { kinesiologoId });
         } else {
           console.error('Error en la respuesta del servidor:', data);
         }

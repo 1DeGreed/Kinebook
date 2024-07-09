@@ -23,7 +23,7 @@ const DetallePaciente = ({ route, navigation }) => {
   useEffect(() => {
     const fetchPaciente = async () => {
       try {
-        const response = await fetch(`http://192.168.0.6:3000/api/pacientes/${pacienteId}`);
+        const response = await fetch(`http://192.168.100.45:3000/api/pacientes/${pacienteId}`);
         if (!response.ok) {
           throw new Error('Error al obtener los detalles del paciente');
         }

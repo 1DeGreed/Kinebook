@@ -12,7 +12,7 @@ const Pacientes = ({ route }) => {
   const navigation = useNavigation();
 
   const fetchPacientes = () => {
-    fetch(`http://192.168.0.6:3000/api/pacientes?kinesiologoId=${kinesiologoId}`)
+    fetch(`http://192.168.100.45:3000/api/pacientes?kinesiologoId=${kinesiologoId}`)
       .then(response => response.json())
       .then(data => {
         setPacientes(data);
@@ -62,7 +62,7 @@ const Pacientes = ({ route }) => {
         {
           text: "Eliminar",
           onPress: () => {
-            fetch(`http://192.168.0.6:3000/api/pacientes/${pacienteId}`, {
+            fetch(`http://192.168.100.45:3000/api/pacientes/${pacienteId}`, {
               method: 'DELETE',
             })
               .then(response => {
